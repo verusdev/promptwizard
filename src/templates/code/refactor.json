@@ -1,0 +1,60 @@
+{
+  "id": "refactor",
+  "type": "code",
+  "platform": "Generic LLM",
+  "name": "Рефакторинг кода",
+  "description": "Безопасный рефакторинг с сохранением поведения: план изменений, ключевые фрагменты до/после, заметки о миграции",
+  "slots": [
+    {
+      "key": "code",
+      "label": "Код для рефакторинга",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "key": "language",
+      "label": "Язык",
+      "description": "Например: TypeScript, Python, Java",
+      "required": false,
+      "type": "string"
+    },
+    {
+      "key": "goal",
+      "label": "Цель рефакторинга",
+      "required": false,
+      "type": "enum",
+      "options": ["readability", "performance", "architecture", "modernize", "general"],
+      "default": "general"
+    },
+    {
+      "key": "constraints",
+      "label": "Ограничения",
+      "description": "Например: не менять публичный API, сохранить совместимость с Go 1.22, без новых зависимостей",
+      "required": false,
+      "type": "string"
+    }
+  ],
+  "template": "You are a senior {language} engineer tasked with a careful refactor.\nGoal: {goal}\nConstraints:\n{constraints}\n\nCode to refactor:\n{code}\n\nRules:\n- Preserve behavior exactly: no functional changes unless the code is provably broken (call it out if so).\n- Keep the public API stable unless constraints say otherwise.\n- First give a numbered refactor plan, then the refactored code for the key fragments, then migration notes.\n- Do not rewrite boilerplate wholesale: show only the parts that actually change.",
+  "rules": [
+    {
+      "description": "Модернизация — свежий API и идиомы",
+      "when": { "slot": "goal", "equals": "modernize" },
+      "append": "\n\nModernization note: prefer current language idioms and standard-library APIs; list each replaced deprecated construct."
+    },
+    {
+      "description": "Производительность — измеримые улучшения",
+      "when": { "slot": "goal", "equals": "performance" },
+      "append": "\n\nPerformance note: for every change state the expected complexity/allocation win and how to verify it with a benchmark."
+    },
+    {
+      "description": "Архитектура — границы модулей",
+      "when": { "slot": "goal", "equals": "architecture" },
+      "append": "\n\nArchitecture note: describe the target module boundaries and dependencies before showing code changes."
+    }
+  ],
+  "defaults": {},
+  "negativeFormat": "inline",
+  "examples": [
+    "You are a senior TypeScript engineer tasked with a careful refactor.\nGoal: readability\nConstraints:\nkeep public API stable\n\nCode to refactor:\nexport function p(u: any) { ... }\n\nRules:\n- Preserve behavior exactly: no functional changes unless the code is provably broken (call it out if so).\n- Keep the public API stable unless constraints say otherwise.\n- First give a numbered refactor plan, then the refactored code for the key fragments, then migration notes.\n- Do not rewrite boilerplate wholesale: show only the parts that actually change."
+  ]
+}

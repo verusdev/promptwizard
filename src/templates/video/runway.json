@@ -1,0 +1,104 @@
+{
+  "id": "runway",
+  "type": "video",
+  "platform": "Runway",
+  "name": "Runway Gen-3/Gen-4 промт",
+  "description": "Кинематографичное описание сцены для Runway: план, сюжет, движение камеры, свет, атмосфера",
+  "slots": [
+    {
+      "key": "subject",
+      "label": "Главный объект/персонаж",
+      "description": "Кто или что в кадре: например, рыжеволосая девушка в плаще",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "key": "action",
+      "label": "Действие",
+      "description": "Что происходит: например, медленно поворачивается к камере",
+      "required": false,
+      "type": "string"
+    },
+    {
+      "key": "scene",
+      "label": "Место/декорация",
+      "description": "Например: залитый дождём ночной рынок Токио",
+      "required": false,
+      "type": "string"
+    },
+    {
+      "key": "shot",
+      "label": "Тип плана",
+      "required": false,
+      "type": "enum",
+      "options": [
+        "extreme close-up",
+        "close-up",
+        "medium shot",
+        "wide shot",
+        "aerial shot",
+        "low angle shot"
+      ],
+      "default": "medium shot"
+    },
+    {
+      "key": "motion",
+      "label": "Движение камеры",
+      "required": false,
+      "type": "enum",
+      "options": [
+        "static camera",
+        "slow push in",
+        "slow pull out",
+        "pan left",
+        "pan right",
+        "tracking shot",
+        "crane up",
+        "orbit"
+      ],
+      "default": "slow push in"
+    },
+    {
+      "key": "lighting",
+      "label": "Освещение",
+      "description": "Например: неоновые вывески, контровой свет, мягкий закат",
+      "required": false,
+      "type": "string"
+    },
+    {
+      "key": "atmosphere",
+      "label": "Атмосфера/настроение",
+      "description": "Например: тревожное, мечтательное, торжественное",
+      "required": false,
+      "type": "string"
+    }
+  ],
+  "template": "{shot} of {subject}, {action}. Setting: {scene}. Camera motion: {motion}. Lighting: {lighting}. Mood: {atmosphere}. Cinematic color grading, natural motion, coherent physics, no on-screen text.",
+  "rules": [
+    {
+      "description": "Облёт по орбите — уточняем движение",
+      "when": { "slot": "motion", "equals": "orbit" },
+      "append": " The camera circles the subject smoothly at a constant distance and height."
+    },
+    {
+      "description": "Аэросъёмка — дрон-перспектива",
+      "when": { "slot": "shot", "equals": "aerial shot" },
+      "append": " Drone-like perspective, stable horizon, slow altitude drift."
+    },
+    {
+      "description": "Трекинг — движение вслед за объектом",
+      "when": { "slot": "motion", "equals": "tracking shot" },
+      "append": " The camera keeps pace with the subject, background in natural motion blur."
+    },
+    {
+      "description": "Негативные артефакты при флаге --negative",
+      "when": { "flag": "negative" },
+      "negative": "flicker, warping, morphing artifacts, distorted faces, duplicated limbs, text overlays"
+    }
+  ],
+  "defaults": {},
+  "negativeFormat": "inline",
+  "examples": [
+    "wide shot of a lone traveller with a worn backpack, stops and looks at the horizon. Setting: endless salt desert at dusk. Camera motion: slow push in. Lighting: low golden sun. Mood: quiet hope. Cinematic color grading, natural motion, coherent physics, no on-screen text."
+  ]
+}

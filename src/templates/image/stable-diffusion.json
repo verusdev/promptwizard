@@ -1,0 +1,78 @@
+{
+  "id": "stable-diffusion",
+  "type": "image",
+  "platform": "Stable Diffusion",
+  "name": "Stable Diffusion (Automatic1111/ComfyUI) промт",
+  "description": "Промт с негативным блоком и параметрами генерации: Negative prompt, Steps, Sampler, CFG scale, Seed",
+  "slots": [
+    {
+      "key": "subject",
+      "label": "Сюжет/объект",
+      "description": "Что изобразить: объект, сцена, персонаж",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "key": "style",
+      "label": "Стиль",
+      "required": false,
+      "type": "enum",
+      "options": [
+        "photorealistic",
+        "anime",
+        "digital painting",
+        "concept art",
+        "cyberpunk",
+        "watercolor"
+      ]
+    },
+    {
+      "key": "lighting",
+      "label": "Освещение",
+      "description": "Например: rim lighting, soft window light, neon glow",
+      "required": false,
+      "type": "string"
+    },
+    {
+      "key": "details",
+      "label": "Дополнительные детали",
+      "description": "Текстуры, погода, детали сцены (перечислять через запятую)",
+      "required": false,
+      "type": "string"
+    }
+  ],
+  "template": "{subject}, {style}, {lighting}, {details}",
+  "rules": [
+    {
+      "description": "Фотореализм: триггеры качества для SD",
+      "when": { "slot": "style", "equals": "photorealistic" },
+      "append": ", 8k uhd, high detail, sharp focus, physically based rendering"
+    },
+    {
+      "description": "Аниме-триггеры",
+      "when": { "slot": "style", "equals": "anime" },
+      "append": ", anime style, vivid colors, detailed lineart, best quality"
+    },
+    {
+      "description": "Киберпанк: типовые триггеры",
+      "when": { "slot": "style", "equals": "cyberpunk" },
+      "append": ", cyberpunk, neon-drenched, futuristic city, moody atmosphere"
+    },
+    {
+      "description": "Доп. негатив при флаге --negative",
+      "when": { "flag": "negative" },
+      "negative": "ugly, tiling, out of frame, cropped, lowres, jpeg artifacts"
+    }
+  ],
+  "defaults": {
+    "--steps": "28",
+    "--sampler": "Euler a",
+    "--cfg": "7",
+    "--seed": "-1"
+  },
+  "negativeDefault": "blurry, low quality, watermark, deformed, bad anatomy, extra limbs, extra fingers, text, signature, logo",
+  "negativeFormat": "sd-block",
+  "examples": [
+    "Negative prompt: blurry, low quality, watermark, deformed, bad anatomy, extra limbs, extra fingers, text, signature, logo\n\na cyberpunk city street in the rain, cyberpunk, neon glow, wet asphalt reflections, crowd under umbrellas, photorealistic, 8k uhd, high detail, sharp focus, physically based rendering\nSteps: 28, Sampler: Euler a, CFG scale: 7, Seed: -1"
+  ]
+}

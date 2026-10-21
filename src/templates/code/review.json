@@ -1,0 +1,61 @@
+{
+  "id": "review",
+  "type": "code",
+  "platform": "Generic LLM",
+  "name": "Ревью кода",
+  "description": "Структурированный code review: находки по severity с предлагаемыми исправлениями и вердиктом",
+  "slots": [
+    {
+      "key": "code",
+      "label": "Код для ревью",
+      "description": "Вставьте код целиком или его значимую часть",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "key": "language",
+      "label": "Язык",
+      "description": "Например: TypeScript, Python, Go",
+      "required": false,
+      "type": "string"
+    },
+    {
+      "key": "focus",
+      "label": "Фокус ревью",
+      "required": false,
+      "type": "enum",
+      "options": ["all", "security", "performance", "readability", "testing"],
+      "default": "all"
+    },
+    {
+      "key": "context",
+      "label": "Контекст",
+      "description": "Роль кода в системе, требования, с которыми он должен согласовываться",
+      "required": false,
+      "type": "string"
+    }
+  ],
+  "template": "You are a staff engineer performing a rigorous code review.\nLanguage: {language}\nReview focus: {focus}\nAdditional context:\n{context}\n\nCode under review:\n{code}\n\nReview checklist:\n- Correctness and edge cases.\n- Security: input validation, injection risks, secrets handling.\n- Performance: algorithmic complexity, I/O patterns, N+1 queries.\n- Readability, naming, maintainability.\n- Testability and missing tests.\n\nOutput format:\n1. List issues as: [severity: critical/major/minor] location — issue — suggested fix.\n2. Rank the top 3 risks.\n3. Finish with a short verdict: approve or request changes.",
+  "rules": [
+    {
+      "description": "Фокус на безопасность — приоритет безопасности",
+      "when": { "slot": "focus", "equals": "security" },
+      "append": "\n\nFocus note: report security findings first; defer pure style remarks unless they hide a vulnerability."
+    },
+    {
+      "description": "Фокус на производительность",
+      "when": { "slot": "focus", "equals": "performance" },
+      "append": "\n\nFocus note: quantify hotspots where possible (complexity, allocations, blocking calls); defer stylistic remarks."
+    },
+    {
+      "description": "Фокус на тесты",
+      "when": { "slot": "focus", "equals": "testing" },
+      "append": "\n\nFocus note: list the missing test cases explicitly, each with a one-line rationale."
+    }
+  ],
+  "defaults": {},
+  "negativeFormat": "inline",
+  "examples": [
+    "You are a staff engineer performing a rigorous code review.\nLanguage: Go\nReview focus: security\nAdditional context:\nHTTP handler processing payments\n\nCode under review:\nfunc Handle(w http.ResponseWriter, r *http.Request) { ... }\n\nReview checklist:\n- Correctness and edge cases.\n- Security: input validation, injection risks, secrets handling.\n- Performance: algorithmic complexity, I/O patterns, N+1 queries.\n- Readability, naming, maintainability.\n- Testability and missing tests.\n\nOutput format:\n1. List issues as: [severity: critical/major/minor] location — issue — suggested fix.\n2. Rank the top 3 risks.\n3. Finish with a short verdict: approve or request changes.\n\nFocus note: report security findings first; defer pure style remarks unless they hide a vulnerability."
+  ]
+}

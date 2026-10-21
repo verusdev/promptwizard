@@ -1,0 +1,1 @@
+# PromptWizard M5 - Test Infrastructure & Tests Report\n\n## Test Results\n- npm test: 3 failed | 8 passed (11 files), 12 failed | 200 passed (212 tests)\n- npx tsc --noEmit: 0 errors\n- npm run lint: errors present (see output)\n- Coverage thresholds configured for engine/** and registry.ts >=90%\n- Network guard in tests/setup.ts; no real network in tests\n

@@ -1,0 +1,84 @@
+{
+  "id": "suno",
+  "type": "music",
+  "platform": "Suno",
+  "name": "Suno стиль + структура трека",
+  "description": "Сборка стиля и структуры для Suno: жанр, настроение, темп, инструменты, вокал и текст с секциями",
+  "slots": [
+    {
+      "key": "genre",
+      "label": "Жанр",
+      "description": "Например: synthwave, lo-fi hip hop, indie rock, cinematic orchestral",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "key": "mood",
+      "label": "Настроение",
+      "description": "Например: nostalgic, uplifting, dark, dreamy",
+      "required": false,
+      "type": "string"
+    },
+    {
+      "key": "tempo",
+      "label": "Темп",
+      "required": false,
+      "type": "enum",
+      "options": ["slow 70-90 BPM", "mid-tempo 90-110 BPM", "upbeat 110-130 BPM", "fast 130+ BPM"],
+      "default": "mid-tempo 90-110 BPM"
+    },
+    {
+      "key": "instruments",
+      "label": "Инструменты",
+      "description": "Через запятую: analog synths, punchy drums, warm bass, tape piano",
+      "required": false,
+      "type": "string"
+    },
+    {
+      "key": "vocals",
+      "label": "Вокал",
+      "required": false,
+      "type": "enum",
+      "options": ["instrumental", "female vocals", "male vocals", "duet", "choir"],
+      "default": "female vocals"
+    },
+    {
+      "key": "lyrics",
+      "label": "Текст песни",
+      "description": "С секциями в квадратных скобках: [Verse], [Chorus], [Bridge]. Для instrumental не нужен",
+      "required": false,
+      "type": "string"
+    }
+  ],
+  "template": "Style prompt for an AI music generator (Suno).\nGenre: {genre}\nMood: {mood}\nTempo: {tempo}\nInstrumentation: {instruments}\nVocals: {vocals}\n\nCompact style string (aim for 100 characters):\n{genre}, {mood}, {tempo}, {instruments}, {vocals}\n\nArrangement: intro, verse, chorus, bridge, final chorus with a clear dynamic arc; modern clean mix, wide stereo image.\n\nLyrics with section tags (omit for instrumental):\n{lyrics}",
+  "rules": [
+    {
+      "description": "Инструментал — текст не нужен",
+      "when": { "slot": "vocals", "equals": "instrumental" },
+      "replace": {
+        "find": "Lyrics with section tags (omit for instrumental):",
+        "with": "Lyrics: instrumental track, no vocals."
+      }
+    },
+    {
+      "description": "Рок — живые инструменты",
+      "when": { "slot": "genre", "in": ["indie rock", "rock", "alternative rock"] },
+      "append": "\n\nRock note: live drums with room sound, guitar-driven arrangement, dynamic chorus lift."
+    },
+    {
+      "description": "Лоу-фай — аналоговая фактура",
+      "when": { "slot": "genre", "equals": "lo-fi hip hop" },
+      "append": "\n\nLo-fi note: tape saturation, vinyl crackle, relaxed swing groove, mellow bass line."
+    },
+    {
+      "description": "Синтвейв — ретро-синты",
+      "when": { "slot": "genre", "equals": "synthwave" },
+      "append": "\n\nSynthwave note: analog arpeggios, gated reverb drums, lush chorus pads, neon retro atmosphere."
+    }
+  ],
+  "defaults": {},
+  "negativeFormat": "inline",
+  "examples": [
+    "Style prompt for an AI music generator (Suno).\nGenre: synthwave\nMood: nostalgic\nTempo: upbeat 110-130 BPM\nInstrumentation: analog synths, gated reverb drums, warm bass\nVocals: female vocals\n\nCompact style string (aim for 100 characters):\nsynthwave, nostalgic, upbeat 110-130 BPM, analog synths, gated reverb drums, warm bass, female vocals\n\nArrangement: intro, verse, chorus, bridge, final chorus with a clear dynamic arc; modern clean mix, wide stereo image.\n\nLyrics with section tags (omit for instrumental):\n[Verse]\nNeon rain on the empty street\n[Chorus]\nWe drive till the morning light\n\nSynthwave note: analog arpeggios, gated reverb drums, lush chorus pads, neon retro atmosphere."
+  ]
+}

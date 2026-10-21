@@ -1,0 +1,87 @@
+{
+  "id": "dalle",
+  "type": "image",
+  "platform": "DALL-E",
+  "name": "DALL-E 3 промт",
+  "description": "Подробный естественно-языковый промт для DALL-E 3: сюжет, стиль, настроение, свет и композиция",
+  "slots": [
+    {
+      "key": "subject",
+      "label": "Сюжет/объект",
+      "description": "Что изобразить: объект, сцена, персонаж",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "key": "style",
+      "label": "Стиль",
+      "required": false,
+      "type": "enum",
+      "options": [
+        "photorealistic",
+        "illustrative",
+        "3d render",
+        "flat design",
+        "watercolor",
+        "pixel art",
+        "papercraft"
+      ]
+    },
+    {
+      "key": "mood",
+      "label": "Настроение",
+      "required": false,
+      "type": "enum",
+      "options": ["cheerful", "mysterious", "serene", "dramatic", "melancholic", "professional"]
+    },
+    {
+      "key": "lighting",
+      "label": "Освещение",
+      "description": "Например: soft studio light, stormy sky with lightning, warm sunset",
+      "required": false,
+      "type": "string"
+    },
+    {
+      "key": "composition",
+      "label": "Композиция/ракурс",
+      "required": false,
+      "type": "enum",
+      "options": [
+        "close-up",
+        "wide shot",
+        "bird's eye view",
+        "rule of thirds",
+        "symmetrical composition",
+        "macro detail"
+      ]
+    }
+  ],
+  "template": "{subject}.\nStyle: {style}.\nMood: {mood}.\nLighting: {lighting}.\nComposition: {composition}.",
+  "rules": [
+    {
+      "description": "Фотореализм для DALL-E",
+      "when": { "slot": "style", "equals": "photorealistic" },
+      "append": " Ultra-realistic, high detail, natural light behavior, correct anatomy."
+    },
+    {
+      "description": "Драматичное настроение — усиливаем тон",
+      "when": { "slot": "mood", "equals": "dramatic" },
+      "append": " Strong contrast, cinematic color grading."
+    },
+    {
+      "description": "Пиксель-арт — стилистические ограничения",
+      "when": { "slot": "style", "equals": "pixel art" },
+      "append": " Limited color palette, crisp pixel edges, retro 16-bit aesthetic."
+    },
+    {
+      "description": "Негативный список при флаге --negative (DALL-E игнорирует его, полезен как памятка)",
+      "when": { "flag": "negative" },
+      "negative": "text, watermark, blurry, deformed, extra limbs, duplicate objects"
+    }
+  ],
+  "defaults": {},
+  "negativeFormat": "inline",
+  "examples": [
+    "A lonely lighthouse on a cliff above a stormy sea.\nStyle: photorealistic.\nMood: dramatic.\nLighting: stormy sky with lightning.\nComposition: wide shot. Ultra-realistic, high detail, natural light behavior, correct anatomy. Strong contrast, cinematic color grading."
+  ]
+}

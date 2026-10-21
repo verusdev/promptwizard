@@ -1,0 +1,67 @@
+{
+  "id": "generic-llm",
+  "type": "code",
+  "platform": "Generic LLM",
+  "name": "Генерация кода (ChatGPT/Claude/Gemini)",
+  "description": "Универсальный промт на написание production-ready кода: задача, язык, фреймворк, контекст и требования",
+  "slots": [
+    {
+      "key": "task",
+      "label": "Задача",
+      "description": "Что нужно сделать: например, REST API для управления задачами с авторизацией",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "key": "language",
+      "label": "Язык/стек",
+      "description": "Например: TypeScript, Python, Go, Rust, Java, C#",
+      "required": false,
+      "type": "string"
+    },
+    {
+      "key": "framework",
+      "label": "Фреймворк/окружение",
+      "description": "Например: FastAPI, Next.js 15, Spring Boot, GTK4 — если применимо",
+      "required": false,
+      "type": "string"
+    },
+    {
+      "key": "context",
+      "label": "Контекст и ограничения",
+      "description": "Существующие контракты, схемы данных, ограничения (версии, размеры, совместимость)",
+      "required": false,
+      "type": "string"
+    },
+    {
+      "key": "avoid",
+      "label": "Чего избегать",
+      "description": "Например: внешних зависимостей, глобального состояния, блокирующего I/O",
+      "required": false,
+      "type": "string"
+    }
+  ],
+  "template": "You are a senior {language} software engineer.\n\nTask: {task}\nFramework/runtime: {framework}\nContext and constraints:\n{context}\nWhat to avoid:\n{avoid}\n\nRequirements:\n- Write clean, idiomatic, production-ready code.\n- Validate all external input; handle errors explicitly.\n- Add short comments only where the intent is non-obvious.\n- If information is missing, state your assumptions briefly before the code.\n\nRespond with the complete code first, followed by a brief explanation of key decisions.",
+  "rules": [
+    {
+      "description": "Подсказки для Python",
+      "when": { "slot": "language", "equals": "python" },
+      "append": "\n\nAdditional guidance (Python): prefer the standard library, add type hints, target Python 3.11+, use pathlib and dataclasses where fitting."
+    },
+    {
+      "description": "Подсказки для TypeScript",
+      "when": { "slot": "language", "in": ["typescript", "javascript"] },
+      "append": "\n\nAdditional guidance (TypeScript): assume strict mode, avoid any, prefer discriminated unions, use the native fetch and node: prefixed imports."
+    },
+    {
+      "description": "Подсказки для Go",
+      "when": { "slot": "language", "equals": "go" },
+      "append": "\n\nAdditional guidance (Go): return errors explicitly, prefer the standard library, keep functions small, add table-driven tests alongside the code."
+    }
+  ],
+  "defaults": {},
+  "negativeFormat": "inline",
+  "examples": [
+    "You are a senior Python software engineer.\n\nTask: REST API for task management with JWT auth\nFramework/runtime: FastAPI\nContext and constraints:\nPostgreSQL via SQLAlchemy 2.0; Python 3.12\nWhat to avoid:\n\n\nRequirements:\n- Write clean, idiomatic, production-ready code.\n- Validate all external input; handle errors explicitly.\n- Add short comments only where the intent is non-obvious.\n- If information is missing, state your assumptions briefly before the code.\n\nRespond with the complete code first, followed by a brief explanation of key decisions.\n\nAdditional guidance (Python): prefer the standard library, add type hints, target Python 3.11+, use pathlib and dataclasses where fitting."
+  ]
+}

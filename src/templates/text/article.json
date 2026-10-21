@@ -1,0 +1,81 @@
+{
+  "id": "article",
+  "type": "text",
+  "platform": "Generic LLM",
+  "name": "Статья/блог-пост",
+  "description": "SEO-оптимизированная статья: заголовок, вводная, H2/H3, примеры, вывод с призывом к действию",
+  "slots": [
+    {
+      "key": "topic",
+      "label": "Тема статьи",
+      "description": "О чём писать: например, «как выбрать ноутбук для разработки»",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "key": "audience",
+      "label": "Целевая аудитория",
+      "description": "Например: начинающие маркетологи, CTO стартапов, родители",
+      "required": false,
+      "type": "string"
+    },
+    {
+      "key": "tone",
+      "label": "Тон голоса",
+      "required": false,
+      "type": "enum",
+      "options": ["professional", "casual", "friendly", "authoritative", "humorous"],
+      "default": "professional"
+    },
+    {
+      "key": "language",
+      "label": "Язык статьи",
+      "description": "Например: русском, English, Deutsch",
+      "required": false,
+      "type": "string",
+      "default": "русском"
+    },
+    {
+      "key": "wordcount",
+      "label": "Объём (слов)",
+      "required": false,
+      "type": "number",
+      "default": "1200"
+    },
+    {
+      "key": "keywords",
+      "label": "SEO-ключевые слова",
+      "description": "Через запятую: вплести естественно в текст",
+      "required": false,
+      "type": "string"
+    }
+  ],
+  "template": "Write a {wordcount}-word article in {language} on the topic: {topic}.\nTarget audience: {audience}\nTone of voice: {tone}\nSEO keywords to weave in naturally: {keywords}\n\nStructure requirements:\n- Compelling headline that includes the main keyword.\n- Short intro of 2-3 sentences that hooks the reader with a concrete problem or fact.\n- H2/H3 subheadings; paragraphs of 2-4 sentences; bullet lists where they aid scanning.\n- Concrete examples, numbers, and comparisons instead of generic claims.\n- End with a clear takeaway and one call to action.\n\nReturn only the article text with markdown formatting.",
+  "rules": [
+    {
+      "description": "Профессиональный тон без кликбейта",
+      "when": { "slot": "tone", "equals": "professional" },
+      "append": "\n\nStyle note: neutral professional tone, no clickbait, mark any unverified statistics."
+    },
+    {
+      "description": "Дружелюбный тон — разговорный, но не пустой",
+      "when": { "slot": "tone", "equals": "friendly" },
+      "append": "\n\nStyle note: warm conversational tone, short sentences, address the reader directly with 'you'."
+    },
+    {
+      "description": "Юмор — без сарказма и оскорблений",
+      "when": { "slot": "tone", "equals": "humorous" },
+      "append": "\n\nStyle note: light wit and playful analogies; never sarcasm that could offend or distract from the point."
+    },
+    {
+      "description": "SEO-заметка при заданных ключевых словах",
+      "when": { "slot": "keywords" },
+      "append": "\n\nSEO note: place the main keyword in the headline, the first paragraph, and one H2; use the rest as natural synonyms."
+    }
+  ],
+  "defaults": {},
+  "negativeFormat": "inline",
+  "examples": [
+    "Write a 1200-word article in русском on the topic: как выбрать ноутбук для разработки.\nTarget audience: начинающие фронтенд-разработчики\nTone of voice: friendly\nSEO keywords to weave in naturally: ноутбук для программиста, какой ноутбук купить\n\nStructure requirements:\n- Compelling headline that includes the main keyword.\n- Short intro of 2-3 sentences that hooks the reader with a concrete problem or fact.\n- H2/H3 subheadings; paragraphs of 2-4 sentences; bullet lists where they aid scanning.\n- Concrete examples, numbers, and comparisons instead of generic claims.\n- End with a clear takeaway and one call to action.\n\nReturn only the article text with markdown formatting."
+  ]
+}

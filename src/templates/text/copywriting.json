@@ -1,0 +1,85 @@
+{
+  "id": "copywriting",
+  "type": "text",
+  "platform": "Generic LLM",
+  "name": "Копирайтинг для площадки",
+  "description": "Продающий текст под конкретную площадку: лендинг, Instagram, email, Google Ads, Telegram",
+  "slots": [
+    {
+      "key": "product",
+      "label": "Продукт/услуга",
+      "description": "Что продаём: например, онлайн-курс по SQL для аналитиков",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "key": "platform",
+      "label": "Площадка",
+      "required": false,
+      "type": "enum",
+      "options": ["landing page", "instagram", "email", "google ads", "telegram"],
+      "default": "landing page"
+    },
+    {
+      "key": "usp",
+      "label": "Ключевое преимущество",
+      "description": "Главная выгода клиента в одном предложении",
+      "required": false,
+      "type": "string"
+    },
+    {
+      "key": "audience",
+      "label": "Целевая аудитория",
+      "description": "Кому продаём и что для них важно",
+      "required": false,
+      "type": "string"
+    },
+    {
+      "key": "cta",
+      "label": "Призыв к действию",
+      "description": "Например: записаться на демо, купить со скидкой, скачать чек-лист",
+      "required": false,
+      "type": "string"
+    },
+    {
+      "key": "language",
+      "label": "Язык текста",
+      "required": false,
+      "type": "string",
+      "default": "русском"
+    }
+  ],
+  "template": "Write marketing copy in {language} for a {platform}.\nProduct: {product}\nKey benefit: {usp}\nTarget audience: {audience}\nCall to action: {cta}\n\nRequirements:\n- The first 1-2 lines must hook attention: no generic greetings, no 'именно сейчас'.\n- Sell benefits, not features; use simple concrete words.\n- One core message and exactly one call to action.\n- Keep it tight and scannable; cut every filler sentence.\n\nReturn only the copy.",
+  "rules": [
+    {
+      "description": "Instagram: лимит первой строки и хештеги",
+      "when": { "slot": "platform", "equals": "instagram" },
+      "append": "\n\nInstagram notes: first line up to 120 characters (it is cut in the feed), add 3-5 relevant hashtags at the end, no links in the body."
+    },
+    {
+      "description": "Email: тема и превью",
+      "when": { "slot": "platform", "equals": "email" },
+      "append": "\n\nEmail notes: provide a subject line under 45 characters plus complementary preview text; CTA button text of 2-3 words."
+    },
+    {
+      "description": "Google Ads: жёсткие лимиты",
+      "when": { "slot": "platform", "equals": "google ads" },
+      "append": "\n\nGoogle Ads notes: headlines up to 30 characters, descriptions up to 90 characters; include the main keyword in a headline."
+    },
+    {
+      "description": "Telegram: стиль канала",
+      "when": { "slot": "platform", "equals": "telegram" },
+      "append": "\n\nTelegram notes: 1-3 short paragraphs, line breaks for rhythm, one emoji max per paragraph, end with a single call to action."
+    },
+    {
+      "description": "Лендинг: структура блоков",
+      "when": { "slot": "platform", "equals": "landing page" },
+      "append": "\n\nLanding page notes: write a headline, subheadline, 3 benefit bullets, and a CTA button label as separate blocks."
+    }
+  ],
+  "defaults": {},
+  "negativeFormat": "inline",
+  "examples": [
+    "Write marketing copy in русском for a landing page.\nProduct: онлайн-курс по SQL для аналитиков\nKey benefit: за 6 недель научиться писать сложные запросы без подсказок\nTarget audience: аналитики, которые засели на джойнах\nCall to action: записаться на бесплатный вводный урок\n\nRequirements:\n- The first 1-2 lines must hook attention: no generic greetings, no 'именно сейчас'.\n- Sell benefits, not features; use simple concrete words.\n- One core message and exactly one call to action.\n- Keep it tight and scannable; cut every filler sentence.\n\nReturn only the copy.\n\nLanding page notes: write a headline, subheadline, 3 benefit bullets, and a CTA button label as separate blocks."
+  ]
+}

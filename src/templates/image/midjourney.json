@@ -1,0 +1,120 @@
+{
+  "id": "midjourney",
+  "type": "image",
+  "platform": "Midjourney",
+  "name": "Midjourney v6/v7 промт",
+  "description": "Сборка промта для Midjourney с параметрами --ar/--v/--stylize/--chaos и негативом через --no",
+  "slots": [
+    {
+      "key": "subject",
+      "label": "Сюжет/объект",
+      "description": "Что изобразить: объект, сцена, персонаж",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "key": "style",
+      "label": "Стиль",
+      "description": "Художественный стиль изображения",
+      "required": false,
+      "type": "enum",
+      "options": [
+        "cinematic",
+        "photorealistic",
+        "anime",
+        "oil painting",
+        "watercolor",
+        "cyberpunk",
+        "3d render",
+        "fantasy art",
+        "film noir",
+        "minimalist"
+      ]
+    },
+    {
+      "key": "lighting",
+      "label": "Освещение",
+      "description": "Например: neon lighting, golden hour, studio softbox, volumetric light",
+      "required": false,
+      "type": "string"
+    },
+    {
+      "key": "camera",
+      "label": "Камера/ракурс",
+      "description": "Например: low angle, macro shot, aerial view, portrait framing",
+      "required": false,
+      "type": "string"
+    },
+    {
+      "key": "aspect",
+      "label": "Соотношение сторон",
+      "required": false,
+      "type": "enum",
+      "options": ["16:9", "9:16", "1:1", "4:5", "3:2", "2:3", "21:9"],
+      "param": "--ar"
+    },
+    {
+      "key": "version",
+      "label": "Версия Midjourney",
+      "required": false,
+      "type": "enum",
+      "options": ["6", "6.1", "7"],
+      "param": "--v"
+    },
+    {
+      "key": "stylize",
+      "label": "Stylize (0–1000)",
+      "description": "Сила художественной интерпретации; типичные значения 50–750",
+      "required": false,
+      "type": "number",
+      "param": "--stylize"
+    },
+    {
+      "key": "chaos",
+      "label": "Chaos (0–100)",
+      "description": "Разброс вариантов при генерации",
+      "required": false,
+      "type": "number",
+      "param": "--chaos"
+    }
+  ],
+  "template": "{subject}, {style}, {lighting}, {camera} {params}",
+  "rules": [
+    {
+      "description": "Фотореализм усиливается деталями",
+      "when": { "slot": "style", "equals": "photorealistic" },
+      "append": ", 8k, ultra detailed, sharp focus, natural colors"
+    },
+    {
+      "description": "Аниме-стиль: чистые линии и насыщенные цвета",
+      "when": { "slot": "style", "equals": "anime" },
+      "append": ", vibrant colors, clean line art, studio anime style"
+    },
+    {
+      "description": "Киберпанк: неон и дождь",
+      "when": { "slot": "style", "equals": "cyberpunk" },
+      "append": ", neon lights, rain-soaked streets, high contrast"
+    },
+    {
+      "description": "Фильм-нуар: контрастный свет и тени",
+      "when": { "slot": "style", "equals": "film noir" },
+      "append": ", black and white, hard shadows, dramatic chiaroscuro"
+    },
+    {
+      "description": "Негативный список для --no при флаге --negative",
+      "when": { "flag": "negative" },
+      "negative": "blurry, low quality, watermark, deformed hands, extra fingers, unreadable text"
+    }
+  ],
+  "defaults": {
+    "--ar": "16:9",
+    "--v": "6.1",
+    "--stylize": "100",
+    "--chaos": "0"
+  },
+  "negativeFormat": "mj-no",
+  "examples": [
+    "a cyberpunk city street at night, cinematic, neon lighting, low angle --ar 16:9 --v 6.1 --stylize 100 --chaos 0",
+    "a lone lighthouse on a cliff, oil painting, golden hour, aerial view --ar 3:2 --v 7 --stylize 250 --chaos 12"
+  ]
+}

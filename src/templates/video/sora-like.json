@@ -1,0 +1,87 @@
+{
+  "id": "sora-like",
+  "type": "video",
+  "platform": "Sora-like",
+  "name": "Sora-подобная генерация видео",
+  "description": "Детальное нарративное описание сцены для Sora-класса моделей: сюжет, окружение, визуальный стиль, камера, свет",
+  "slots": [
+    {
+      "key": "narrative",
+      "label": "Сюжет сцены",
+      "description": "Что происходит от начала до конца кадра: например, бариста готовит кофе на рассвете в пустом кафе",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "key": "subject",
+      "label": "Описание персонажа/объекта",
+      "description": "Внешность, одежда, детали — для консистентности на протяжении ролика",
+      "required": false,
+      "type": "string"
+    },
+    {
+      "key": "environment",
+      "label": "Окружение",
+      "description": "Место, погода, время суток, детали интерьера/ландшафта",
+      "required": false,
+      "type": "string"
+    },
+    {
+      "key": "style",
+      "label": "Визуальный стиль",
+      "required": false,
+      "type": "enum",
+      "options": [
+        "cinematic film",
+        "documentary",
+        "3d animation",
+        "anime",
+        "stop motion",
+        "vintage VHS"
+      ],
+      "default": "cinematic film"
+    },
+    {
+      "key": "camera",
+      "label": "Язык камеры",
+      "description": "Например: handheld follow cam, slow dolly zoom, static tripod, macro lens",
+      "required": false,
+      "type": "string"
+    },
+    {
+      "key": "lighting",
+      "label": "Свет",
+      "description": "Например: холодное утреннее окно, тёплые лампы накаливания, грозовая вспышка",
+      "required": false,
+      "type": "string"
+    }
+  ],
+  "template": "Cinematic video scene, single continuous shot.\nStory: {narrative}\nSubject: {subject}\nEnvironment: {environment}\nVisual style: {style}\nCamera language: {camera}\nLighting: {lighting}\n\nRequirements:\n- Consistent character appearance, clothing, and environment details for the whole shot.\n- Physically plausible motion: natural physics, coherent temporal flow, no jump cuts.\n- Rich sensory detail: textures, weather, particles, depth of field — without clutter.\n- No captions, subtitles, watermarks, or on-screen text.",
+  "rules": [
+    {
+      "description": "Документалка — натуральный свет и микро-тряска",
+      "when": { "slot": "style", "equals": "documentary" },
+      "append": "\n\nDocumentary note: subtle handheld micro-shake, available light only, muted natural colors, observational framing."
+    },
+    {
+      "description": "Ретро VHS — аналоговые артефакты",
+      "when": { "slot": "style", "equals": "vintage VHS" },
+      "append": "\n\nVHS note: analog grain, slight chromatic aberration, soft interlacing feel, 4:3 framing."
+    },
+    {
+      "description": "Аниме — стилизация под 2D",
+      "when": { "slot": "style", "equals": "anime" },
+      "append": "\n\nAnime note: hand-drawn 2D look, expressive lighting, clean line art, subtle cel shading."
+    },
+    {
+      "description": "Стоп-моушен — тактильность",
+      "when": { "slot": "style", "equals": "stop motion" },
+      "append": "\n\nStop motion note: visible clay/felt textures, slight frame-to-frame imperfection, miniature-set depth."
+    }
+  ],
+  "defaults": {},
+  "negativeFormat": "inline",
+  "examples": [
+    "Cinematic video scene, single continuous shot.\nStory: a lighthouse keeper climbs the spiral stairs with a lantern as a storm rages outside\nSubject: elderly man in a wool sweater, grey beard, weathered hands\nEnvironment: stone lighthouse interior, sea spray on the windows, night storm\nVisual style: cinematic film\nCamera language: handheld follow cam rising behind him\nLighting: flickering lantern light mixed with blue lightning flashes\n\nRequirements:\n- Consistent character appearance, clothing, and environment details for the whole shot.\n- Physically plausible motion: natural physics, coherent temporal flow, no jump cuts.\n- Rich sensory detail: textures, weather, particles, depth of field — without clutter.\n- No captions, subtitles, watermarks, or on-screen text."
+  ]
+}

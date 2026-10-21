@@ -1,0 +1,83 @@
+{
+  "id": "generic",
+  "type": "music",
+  "platform": "Generic LLM",
+  "name": "Описание музыкального произведения",
+  "description": "Структурированный бриф для музыкальной генерации/композитора: жанр, настрой, темп, форма, инструментовка",
+  "slots": [
+    {
+      "key": "genre",
+      "label": "Жанр",
+      "description": "Например: ambient, jazz fusion, orchestral, techno",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "key": "mood",
+      "label": "Настроение/эмоция",
+      "description": "Например: тревожное, торжественное, меланхоличное",
+      "required": false,
+      "type": "string"
+    },
+    {
+      "key": "tempo",
+      "label": "Темп (BPM и ощущение)",
+      "description": "Например: 120 BPM, driving and energetic",
+      "required": false,
+      "type": "string",
+      "default": "100 BPM"
+    },
+    {
+      "key": "instruments",
+      "label": "Инструменты",
+      "description": "Через запятую: piano, strings, synth pads, double bass",
+      "required": false,
+      "type": "string"
+    },
+    {
+      "key": "structure",
+      "label": "Форма произведения",
+      "required": false,
+      "type": "enum",
+      "options": [
+        "standard verse-chorus",
+        "ABA three-part",
+        "through-composed",
+        "loop-based",
+        "ambient evolving"
+      ],
+      "default": "standard verse-chorus"
+    },
+    {
+      "key": "vocals",
+      "label": "Вокал",
+      "required": false,
+      "type": "enum",
+      "options": ["instrumental", "female vocals", "male vocals", "duet", "choir"],
+      "default": "instrumental"
+    }
+  ],
+  "template": "Compose an original piece of music and describe it precisely.\nGenre: {genre}\nMood: {mood}\nTempo: {tempo}\nInstrumentation: {instruments}\nForm: {structure}\nVocals: {vocals}\n\nDescription of the desired result:\nA coherent {genre} piece with a clear {mood} emotional character. Introduce the main theme early, develop it through a contrasting middle section, then return to the theme with a resolved ending. Keep the arrangement balanced: leave space for each instrument, shape dynamics from quiet intro to the loudest point of the climax.\n\nReturn: a structured description of sections with timings, followed by production notes (mix, space, texture).",
+  "rules": [
+    {
+      "description": "Луповая форма — нарастание слоями",
+      "when": { "slot": "structure", "equals": "loop-based" },
+      "append": "\n\nLoop note: build intensity layer by layer; every 8 bars add or remove exactly one element."
+    },
+    {
+      "description": "Эмбиент — эволюция без ударных",
+      "when": { "slot": "structure", "equals": "ambient evolving" },
+      "append": "\n\nAmbient note: no percussion, slowly evolving textures, long reverb tails, subtle harmonic shifts."
+    },
+    {
+      "description": "Хор — вокализ без слов",
+      "when": { "slot": "vocals", "equals": "choir" },
+      "append": "\n\nChoir note: wordless vocalise, layered harmonies, cathedral-like space."
+    }
+  ],
+  "defaults": {},
+  "negativeFormat": "inline",
+  "examples": [
+    "Compose an original piece of music and describe it precisely.\nGenre: jazz fusion\nMood: тревожное\nTempo: 132 BPM, restless\nInstrumentation: Rhodes piano, upright bass, brushed drums, tenor sax\nForm: through-composed\nVocals: instrumental\n\nDescription of the desired result:\nA coherent jazz fusion piece with a clear тревожное emotional character. Introduce the main theme early, develop it through a contrasting middle section, then return to the theme with a resolved ending. Keep the arrangement balanced: leave space for each instrument, shape dynamics from quiet intro to the loudest point of the climax.\n\nReturn: a structured description of sections with timings, followed by production notes (mix, space, texture)."
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "id": "rewrite",
+  "type": "text",
+  "platform": "Generic LLM",
+  "name": "Переписывание текста",
+  "description": "Переписать текст с целью: упростить, SEO, смена тона, сократить, формализовать — с сохранением смысла",
+  "slots": [
+    {
+      "key": "original",
+      "label": "Исходный текст",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "key": "goal",
+      "label": "Цель переписывания",
+      "required": false,
+      "type": "enum",
+      "options": ["simplify", "seo", "change tone", "shorten", "formalize"],
+      "default": "change tone"
+    },
+    {
+      "key": "tone",
+      "label": "Желаемый тон",
+      "description": "Например: профессиональный, дружелюбный,Authoritative — задайте, если цель — смена тона",
+      "required": false,
+      "type": "enum",
+      "options": ["professional", "friendly", "authoritative", "neutral", "persuasive"]
+    },
+    {
+      "key": "language",
+      "label": "Язык результата",
+      "required": false,
+      "type": "string",
+      "default": "русском"
+    }
+  ],
+  "template": "Rewrite the text below in {language}.\nGoal: {goal}\nDesired tone: {tone}\n\nRules:\n- Preserve the original meaning and every fact; do not invent details or numbers.\n- Improve structure and flow; remove filler and repetitions.\n- Keep proper nouns, numbers, and links intact.\n- Return only the rewritten text without commentary.\n\nOriginal text:\n{original}",
+  "rules": [
+    {
+      "description": "SEO — ключ в первом предложении",
+      "when": { "slot": "goal", "equals": "seo" },
+      "append": "\n\nSEO note: keep the main keyword in the first sentence and in one subheading; do not stuff keywords."
+    },
+    {
+      "description": "Упрощение — простой язык",
+      "when": { "slot": "goal", "equals": "simplify" },
+      "append": "\n\nSimplicity note: plain language a 12-year-old could follow, one idea per sentence, active voice."
+    },
+    {
+      "description": "Формализация — деловой стиль",
+      "when": { "slot": "goal", "equals": "formalize" },
+      "append": "\n\nFormal note: business writing conventions, no colloquialisms, precise terminology, no exclamation marks."
+    },
+    {
+      "description": "Сокращение — режем воду",
+      "when": { "slot": "goal", "equals": "shorten" },
+      "append": "\n\nShortening note: cut 40-60% of the length while keeping all key facts and the original conclusion."
+    }
+  ],
+  "defaults": {},
+  "negativeFormat": "inline",
+  "examples": [
+    "Rewrite the text in русском.\nGoal: simplify\nDesired tone: friendly\n\nRules:\n- Preserve the original meaning and every fact; do not invent details or numbers.\n- Improve structure and flow; remove filler and repetitions.\n- Keep proper nouns, numbers, and links intact.\n- Return only the rewritten text without commentary.\n\nOriginal text:\nИмплементация данного функционала позволяет оптимизировать бизнес-процессы.\n\nSimplicity note: plain language a 12-year-old could follow, one idea per sentence, active voice."
+  ]
+}

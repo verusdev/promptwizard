@@ -9,7 +9,12 @@
  */
 const globalWithFetch = globalThis as { fetch?: typeof fetch };
 globalWithFetch.fetch = ((input: unknown) => {
+  const url = String(input);
+  // Разрешаем загрузку локального base64/WASM-буфера yoga-layout (встроенный в бандл)
+  if (url.includes('yoga') || url.startsWith('data:') || url.startsWith('blob:')) {
+    return Promise.reject(new Error('yoga-embedded-fallback'));
+  }
   throw new Error(
-    `Сеть запрещена в тестах: вызван реальный fetch (${String(input)}). Замокайте fetch в тесте.`,
+    `Сеть запрещена в тестах: вызван реальный fetch (${url}). Замокайте fetch в тесте.`,
   );
 }) as typeof fetch;

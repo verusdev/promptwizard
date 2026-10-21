@@ -1,7 +1,7 @@
 import type { Command } from 'commander';
 import chalk from 'chalk';
 import { confirm, input, select } from '@inquirer/prompts';
-import { PROMPT_TYPES, type PromptType, type Slot, type Template } from '../lib/schemas.js';
+import { PROMPT_TYPES, type PromptType, type Template } from '../lib/schemas.js';
 import {
   findTemplate,
   loadRegistry,
@@ -12,6 +12,7 @@ import { buildPrompt, type PromptResult } from '../lib/engine/builder.js';
 import { copyToClipboard } from '../lib/clipboard.js';
 import { writeOutputFile } from '../lib/output.js';
 import { ValidationError } from '../lib/engine/errors.js';
+import { validateTextSlot } from '../lib/validation/slots.js';
 
 /**
  * Интерактивный мастер (T10): тип → платформа → слоты → предпросмотр →
@@ -20,8 +21,6 @@ import { ValidationError } from '../lib/engine/errors.js';
  * Не-TTY запуск (пайп, CI) — понятный отказ с подсказкой использовать generate.
  * Ctrl+C / ESC — тихий выход без stack trace (обработка ExitPromptError в cli.ts).
  */
-
-const NUMBER_RE = /^-?\d+(\.\d+)?$/;
 
 export function registerInteractiveCommand(program: Command): void {
   program
@@ -157,19 +156,6 @@ async function fillSlots(template: Template): Promise<Record<string, string>> {
   }
 
   return values;
-}
-
-function validateTextSlot(slot: Slot, raw: string): true | string {
-  const value = raw.trim();
-  if (value === '') {
-    return slot.required
-      ? 'Значение обязательно — введите текст или выберите слот без значения по умолчанию'
-      : true;
-  }
-  if (slot.type === 'number' && !NUMBER_RE.test(value)) {
-    return 'Ожидается число, например: 16 или 1.5';
-  }
-  return true;
 }
 
 /** Опциональный шаг: негативный блок (только если шаблон умеет негатив). */

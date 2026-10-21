@@ -10,6 +10,7 @@ import { registerListTemplatesCommand } from './commands/list-templates.js';
 import { registerRefineCommand } from './commands/refine.js';
 import { registerConfigCommand } from './commands/config.js';
 import { registerDoctorCommand } from './commands/doctor.js';
+import { registerTuiCommand } from './commands/tui.js';
 import { PromptWizardError } from './lib/engine/errors.js';
 
 /** Версия из package.json (путь резолвится от расположения модуля, не от cwd). */
@@ -39,6 +40,7 @@ export function buildProgram(): Command {
 
   registerGenerateCommand(program);
   registerInteractiveCommand(program);
+  registerTuiCommand(program);
   registerListTypesCommand(program);
   registerListTemplatesCommand(program);
   registerRefineCommand(program);
